@@ -1,17 +1,17 @@
 <template>
   <div class="flex gap-1 items-center">
-    <img
-      :src="icon"
-      :alt="text"
-      class="object-contain shrink-0 self-stretch my-auto w-4 aspect-square"
+    <component
+      :is="icon"
+      class="h-4 w-4"
     >
-    <span class="self-stretch my-auto">{{ text }}</span>
+  </component>
+  <span class="self-stretch my-auto">{{ text }}</span>
   </div>
 </template>
 
 <script setup lang="ts">
 interface Props {
-  icon: string
+  icon: unknown
   text: string
 }
 

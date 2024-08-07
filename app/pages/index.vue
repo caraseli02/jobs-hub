@@ -1,7 +1,6 @@
 <template>
   <main>
-    <ImageGallery />
-    <RedirectsPanel />
-    <MessagesPanel />
+    <LandingHeader />
+    <LandingContent />
   </main>
 </template>

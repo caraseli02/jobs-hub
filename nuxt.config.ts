@@ -8,8 +8,28 @@ export default defineNuxtConfig({
   // https://nuxt.com/modules
   modules: [
     '@nuxthub/core',
-    '@nuxt/eslint'
+    '@nuxt/eslint',
+    '@nuxtjs/tailwindcss',
+    'shadcn-nuxt',
+    '@vueuse/nuxt',
   ],
+  eslint: {
+    checker: true,
+    config: {
+      stylistic: true,
+    },
+  },
+  shadcn: {
+    /**
+     * Prefix for all the imported component
+     */
+    prefix: '',
+    /**
+     * Directory that the component lives in.
+     * @default "./components/ui"
+     */
+    componentDir: './app/components/ui',
+  },
   hub: {
     database: true,
     kv: true,
@@ -19,8 +39,8 @@ export default defineNuxtConfig({
   nitro: {
     experimental: {
       // Enable Server API documentation within NuxtHub
-      openAPI: true
-    }
+      openAPI: true,
+    },
   },
   // Development
   devtools: { enabled: true },

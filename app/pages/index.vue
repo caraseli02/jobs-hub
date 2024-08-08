@@ -1,6 +1,6 @@
 <template>
   <main>
     <LandingHeader />
-    <LandingContent />
+    <LandingJobs />
   </main>
 </template>

@@ -4,7 +4,7 @@
       v-for="(link, index) in socialLinks"
       :key="index"
       :href="link.href"
-      class="flex gap-2.5 justify-center items-center self-stretch px-1 my-auto w-8 h-8 bg-white rounded min-h-[32px]"
+      class="flex gap-2.5 justify-center items-center self-stretch px-1 my-auto w-8 h-8 rounded min-h-[32px]"
     >
       <component
         :is="link.icon"

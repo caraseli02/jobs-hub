@@ -6,8 +6,8 @@ import SocialLinks from './SocialLinks.vue'
 
 <template>
   <div class="container">
-    <article class="flex flex-col rounded-none w-full mx-auto relative">
-      <header class="flex flex-col px-px w-full text-4xl font-bold text-right text-white rounded-lg max-md:max-w-full">
+    <Card class="flex flex-col w-full mx-auto relative rounded-lg">
+      <header class="flex flex-col px-px w-full text-4xl font-bold text-right rounded-lg max-md:max-w-full">
         <div class="flex relative flex-col px-16 py-12 rounded-lg min-h-[191px] max-md:px-5 max-md:max-w-full">
           <img
             loading="lazy"
@@ -21,11 +21,11 @@ import SocialLinks from './SocialLinks.vue'
         </div>
       </header>
       <div
-        class="flex flex-wrap gap-10 items-start pb-6 px-4 w-full bg-white rounded-none max-md:pr-5 max-md:max-w-full rounded-b-lg"
+        class="flex dark:bg-slate-900 flex-wrap gap-10 items-start pb-6 px-4 w-full rounded-none max-md:pr-5 max-md:max-w-full rounded-b-lg"
       >
         <section class="flex-auto self-end max-md:max-w-full ml-32 mt-2">
           <div class="flex flex-col justify-center">
-            <div class="flex flex-col self-start text-gray-800">
+            <div class="flex flex-col self-start">
               <div class="flex gap-2 items-center self-start text-base font-bold">
                 <h2 class="self-stretch my-auto">
                   Company Name
@@ -73,6 +73,6 @@ import SocialLinks from './SocialLinks.vue'
           Name<span class="text-amber-200">!</span>
         </div>
       </div>
-    </article>
+    </Card>
   </div>
 </template>

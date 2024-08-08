@@ -6,12 +6,9 @@ useSeoMeta({
 </script>
 
 <template>
-  <div class="w-screen h-12" />
-  <NuxtPage />
+  <NuxtLayout>
+    <NuxtPage />
+  </NuxtLayout>
 </template>
 
-<style lang="postcss">
-body {
-@apply bg-slate-100
-}
-</style>
+

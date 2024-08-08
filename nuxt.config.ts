@@ -12,7 +12,23 @@ export default defineNuxtConfig({
     '@nuxtjs/tailwindcss',
     'shadcn-nuxt',
     '@vueuse/nuxt',
+    '@nuxtjs/i18n',
+    '@nuxtjs/color-mode',
   ],
+  i18n: {
+    lazy: true,
+    langDir: "locales",
+    strategy: "prefix_except_default",
+    locales: [
+      {
+        code: "en",
+        iso: "en",
+        name: "English",
+        file: "en.json",
+      }
+    ],
+    defaultLocale: "en",
+  },
   eslint: {
     checker: true,
     config: {
@@ -41,6 +57,9 @@ export default defineNuxtConfig({
       // Enable Server API documentation within NuxtHub
       openAPI: true,
     },
+  },
+  colorMode: {
+    classSuffix: "",
   },
   // Development
   devtools: { enabled: true },

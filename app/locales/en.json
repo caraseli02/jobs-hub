@@ -1,0 +1,41 @@
+{
+  "color_mode_switcher": {
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System",
+    "sepia": "Sepia"
+  },
+  "footer": {
+    "companyName": "Company Name",
+    "headers": {
+      "resources": "Resources",
+      "followUs": "Follow us",
+      "legal": "Legal"
+    },
+    "resources": {
+      "flowbite": "Flowbite",
+      "tailwind": "Tailwind CSS"
+    },
+    "followUs": {
+      "github": "Github",
+      "discord": "Discord"
+    },
+    "legal": {
+      "privacyPolicy": "Privacy Policy",
+      "termsConditions": "Terms & Conditions"
+    },
+    "rights": "© 2024 {companyName}. All Rights Reserved"
+  },
+  "profile": {
+    "toggleUserMenu": "Toggle user menu",
+    "myAccount": "My Account",
+    "settings": "Settings",
+    "support": "Support",
+    "logout": "Logout",
+    "createAccount": "Create Account",
+    "logIn": "Log In"
+  },
+    "menu": {
+    "home": "Home"
+  }
+}

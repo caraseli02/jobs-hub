@@ -25,7 +25,7 @@ const changePage = (page: number) => {
 </script>
 
 <template>
-  <div class="flex min-h-screen w-full flex-col bg-muted/40 container">
+  <div class="flex min-h-screen w-fit md:w-full flex-col container">
     <div class="flex flex-col sm:gap-6 sm:py-4">
       <section class="grid flex-1 items-start gap-4 md:gap-6 lg:grid-cols-3 xl:grid-cols-3">
         <div class="grid auto-rows-max items-start gap-4 md:gap-6 lg:col-span-2">
@@ -34,29 +34,29 @@ const changePage = (page: number) => {
               <Card
                 v-for="job in displayedJobs"
                 :key="job.id"
-                class="bg-white px-4 py-2"
+                class="bg-white px-4 py-2 w-[350px] md:w-full"
               >
                 <section class="flex gap-2">
                   <img
                     :src="job.company.logo"
                     alt="Company Logo"
-                    class="w-14 h-14 rounded mt-3"
+                    class="w-10 h-10 md:w-14 md:h-14 rounded mt-3"
                   >
                   <div
                     :class="cn(
-                      'flex flex-col items-start gap-2 w-full border-none text-left text-sm transition-all hover:bg-accent',
+                      'max-w-[250px] sm:max-w-none flex flex-col items-start gap-2 w-full border-none text-left text-sm transition-all hover:bg-accent',
                     )"
                   >
                     <div class="flex w-full flex-col gap-1 mt-2">
-                      <div class="flex items-center">
-                        <div class="flex items-center gap-2">
+                      <div class="flex flex-col md:flex-row md:items-center">
+                        <div class="flex md:items-center gap-2">
                           <div class="font-semibold">
                             {{ job.title }}
                           </div>
                         </div>
                         <div
                           :class="cn(
-                            'ml-auto text-xs flex items-center gap-2',
+                            'hidden md:flex md:ml-auto text-xs md:items-center gap-2',
                           )"
                         >
                           <Badge class="rounded">
@@ -70,10 +70,10 @@ const changePage = (page: number) => {
                         {{ job.company.name }}
                       </div>
                     </div>
-                    <div class="line-clamp-2 text-xs text-muted-foreground">
+                    <div class="line-clamp-2 text-xs w-fit ">
                       {{ job.description.substring(0, 300) }}
                     </div>
-                    <div class="flex items-center justify-between gap-2 w-full">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 w-full">
                       <div class="flex gap-2">
                         <p class="flex gap-1">
                           <MapPinIcon class="w-4 h-4" />
@@ -83,7 +83,7 @@ const changePage = (page: number) => {
                           {{ job.industry }}
                         </Badge>
                       </div>
-                      <div class="flex gap-x-1.5">
+                      <div class="flex flex-wrap gap-1.5 mt-2 md:mt-0">
                         <Badge
                           v-for="tag in job.tags"
                           :key="tag"
@@ -93,11 +93,21 @@ const changePage = (page: number) => {
                         </Badge>
                       </div>
                     </div>
+                    <div
+                      :class="cn(
+                        'flex justify-between w-full md:hidden md:ml-auto text-xs items-center gap-2 my-2',
+                      )"
+                    >
+                      <Badge class="rounded">
+                        5 applicants
+                      </Badge>
+                      {{ useTimeAgo(new Date(job.created_at)) }}
+                    </div>
                   </div>
                 </section>
               </Card>
             </div>
-            <section class="flex justify-between items-center">
+            <section class="flex flex-col md:flex-row justify-between items-center">
               <p class="text-xl font-medium">
                 {{ jobPostings.length }} offers
               </p>

@@ -3,9 +3,8 @@
     <component
       :is="icon"
       class="h-4 w-4"
-    >
-  </component>
-  <span class="self-stretch my-auto">{{ text }}</span>
+    />
+    <span class="self-stretch my-auto">{{ text }}</span>
   </div>
 </template>
 

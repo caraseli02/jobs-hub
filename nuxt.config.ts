@@ -17,17 +17,17 @@ export default defineNuxtConfig({
   ],
   i18n: {
     lazy: true,
-    langDir: "locales",
-    strategy: "prefix_except_default",
+    langDir: 'locales',
+    strategy: 'prefix_except_default',
     locales: [
       {
-        code: "en",
-        iso: "en",
-        name: "English",
-        file: "en.json",
-      }
+        code: 'en',
+        iso: 'en',
+        name: 'English',
+        file: 'en.json',
+      },
     ],
-    defaultLocale: "en",
+    defaultLocale: 'en',
   },
   eslint: {
     checker: true,
@@ -59,7 +59,7 @@ export default defineNuxtConfig({
     },
   },
   colorMode: {
-    classSuffix: "",
+    classSuffix: '',
   },
   // Development
   devtools: { enabled: true },

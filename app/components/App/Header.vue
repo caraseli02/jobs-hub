@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { breakpointsTailwind, useBreakpoints } from "@vueuse/core";
-const breakpoints = useBreakpoints(breakpointsTailwind);
+import { breakpointsTailwind, useBreakpoints } from '@vueuse/core'
 
-const mdAndLarger = breakpoints.greaterOrEqual("md"); // sm and larger
+const breakpoints = useBreakpoints(breakpointsTailwind)
+
+const mdAndLarger = breakpoints.greaterOrEqual('md') // sm and larger
 </script>
 
 <template>

@@ -11,14 +11,14 @@ import {
       <Input
         type="search"
         placeholder="Search..."
-        class="w-full border-none rounded-lg dark:bg-slate-900 ml-1 pl-8 md:w-[200px] lg:w-[250px]"
+        class="w-full border-none rounded-lg bg-slate-200 dark:bg-slate-900 ml-1 pl-8 md:w-[200px] lg:w-[250px]"
       />
     </div>
     <DropdownMenu>
       <DropdownMenuTrigger as-child>
         <Button
           variant="ghost"
-          class="gap-1 my-auto ml-2"
+          class="gap-1 my-auto ml-2 h-11"
         >
           <span class=" sm:whitespace-nowrap">
             Job Status
@@ -41,7 +41,7 @@ import {
       <DropdownMenuTrigger as-child>
         <Button
           variant="ghost"
-          class="gap-1 my-auto ml-2"
+          class="gap-1 my-auto ml-2 h-11"
         >
           <span class=" sm:whitespace-nowrap">
             Applications Total
@@ -75,7 +75,7 @@ import {
       <DropdownMenuTrigger as-child>
         <Button
           variant="ghost"
-          class="gap-1 rounded-md my-auto px-3"
+          class="gap-1 my-auto ml-2 h-11"
         >
           <span class="">Location</span>
         </Button>
@@ -122,7 +122,7 @@ import {
       <DropdownMenuTrigger as-child>
         <Button
           variant="ghost"
-          class="gap-1 rounded-md my-auto px-3"
+          class="gap-1 my-auto ml-2 h-11"
         >
           <span class="">Type</span>
         </Button>

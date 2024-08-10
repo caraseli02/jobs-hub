@@ -15,18 +15,18 @@ const items = [
       <CardTitle>
         <div class="flex items-center space-x-2">
           <MapPin class="w-5 h-5" />
-          <span class="text-sm font-semibold text-gray-900">Austin, TX</span>
+          <span class="text-sm font-semibold">Austin, TX</span>
         </div>
       </CardTitle>
-      <CardDescription class="mt-2 text-xs text-gray-500">
+      <CardDescription class="mt-2 text-xs text-muted-foreground">
         Please send us your detailed CV to apply for this job post
       </CardDescription>
     </CardHeader>
     <CardContent class="gap-6">
-      <div class="mt-4 text-2xl font-bold text-gray-900">
+      <div class="mt-4 text-2xl font-bold">
         $118,000
       </div>
-      <p class="mb-8 text-sm text-gray-500">
+      <p class="mb-8 text-sm text-muted-foreground">
         Avg. salary
       </p>
       <section class="mt-4 flex flex-col gap-4">

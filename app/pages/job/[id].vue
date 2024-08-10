@@ -58,7 +58,7 @@ const fetchJobDetails = async () => {
         ],
         skills: ['Sales', 'Marketing', 'Retail', 'Commerce'],
       })
-    }, 1000) // Simulate a 1 second API call delay
+    }, 100) // Simulate a 1 second API call delay
   })
 }
 
@@ -71,17 +71,17 @@ onMounted(async () => {
 
 <template>
   <section
-    class="container"
+    class="md:container "
   >
-    <div class="mt-6 mb-16 w-full h-52 rounded-xl shadow bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 relative">
-      <div class="w-24 h-24 rounded-full bg-white border flex items-center justify-center absolute -bottom-12 left-9">
-        <Code2Icon class="h-10 w-10" />
+    <div class="mb-16 w-full h-52 md:rounded-xl shadow bg-gradient-to-t from-indigo-500 via-purple-600 to-amber-200 relative">
+      <div class="w-24 h-24 rounded-full bg-white dark:bg-black border flex items-center justify-center absolute -bottom-12 left-9">
+        <Code2Icon class="h-10 w-10 " />
       </div>
     </div>
     <div
       v-if="job"
     >
-      <section class="overflow-hidden border-none mx-10">
+      <section class="overflow-hidden border-none mx-6 md:mx-10">
         <div class="flex flex-row items-start mb-10">
           <div class="grid gap-0.5">
             <div class="flex items-center gap-4">
@@ -124,9 +124,6 @@ onMounted(async () => {
                 <DropdownMenuItem>Trash</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-            <span class="mt-4 text-muted-foreground">
-              November 23, 2023
-            </span>
           </div>
         </div>
         <section class="grid grid-cols-2 xl:grid-cols-3 gap-32">
@@ -186,10 +183,10 @@ onMounted(async () => {
               </div>
               <div class="flex gap-2">
                 <Badge
-                  variant="secondary"
-                  class="bg-slate-200 px-3 py-1.5"
                   v-for="(requirement, index) in job?.skills"
                   :key="index"
+                  variant="secondary"
+                  class="bg-slate-200 px-3 py-1.5"
                 >
                   {{ requirement }}
                 </Badge>
@@ -235,9 +232,10 @@ onMounted(async () => {
     </div>
     <div
       v-else
-      class="max-w-4xl mx-auto my-8 p-4 shadow-lg rounded-lg text-center"
+      class="mx-auto my-8 p-4 shadow-lg rounded-lg text-center flex gap-16 justify-between w-full"
     >
-      <p>Loading...</p>
+      <Skeleton class="w-[95vw] xl:w-[60vw] h-screen" />
+      <Skeleton class="w-[30vw] h-screen hidden xl:block" />
     </div>
   </section>
 </template>

@@ -57,9 +57,16 @@ const items = [
       </section>
     </CardContent>
     <CardFooter>
-      <Button class="w-full py-2 mt-4 text-white bg-black rounded-lg">
-        Apply for this job
-      </Button>
+      <Dialog>
+        <DialogTrigger class="w-full">
+          <Button class="w-full py-2 mt-4 text-white bg-black rounded-lg">
+            Apply for this job
+          </Button>
+        </DialogTrigger>
+        <DialogContent>
+          <JobApplyForm />
+        </DialogContent>
+      </Dialog>
     </CardFooter>
   </Card>
 </template>

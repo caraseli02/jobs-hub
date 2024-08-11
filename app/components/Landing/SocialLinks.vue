@@ -1,5 +1,5 @@
 <template>
-  <nav class="flex gap-4 items-center my-auto">
+  <nav class="flex gap-4 items-center justify-end w-full md:w-fit my-auto">
     <a
       v-for="(link, index) in socialLinks"
       :key="index"

@@ -6,7 +6,7 @@ import SocialLinks from './SocialLinks.vue'
 
 <template>
   <div class="container ">
-    <Card class="flex flex-col mx-0 md:mx-auto relative rounded-lg w-[350px] md:w-full">
+    <Card class="flex flex-col mx-0 md:mx-auto relative rounded-lg md:w-full">
       <section class="hidden md:flex flex-col px-px w-full text-4xl font-bold text-right rounded-lg max-md:max-w-full">
         <div class="flex relative flex-col px-16 py-12 rounded-lg min-h-[191px] max-md:px-5 max-md:max-w-full">
           <img

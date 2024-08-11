@@ -5,13 +5,13 @@ import {
 </script>
 
 <template>
-  <Card class="flex rounded-lg px-1 py-2">
+  <Card class="flex rounded-lg px-1 py-2 w-[calc(100vw-4rem)] md:w-full flex-wrap">
     <div class="relative flex items-center flex-1 md:grow-0">
       <Search class="absolute left-3.5 top-3.5 h-4 w-4 text-muted-foreground" />
       <Input
         type="search"
         placeholder="Search..."
-        class="w-full border-none rounded-lg bg-slate-200 dark:bg-slate-900 ml-1 pl-8 md:w-[200px] lg:w-[250px]"
+        class="w-full border-none rounded-lg bg-slate-200 dark:bg-slate-900 ml-1 pl-8 min-w-[250px] lg:w-[250px]"
       />
     </div>
     <DropdownMenu>

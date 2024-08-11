@@ -26,7 +26,7 @@ const changePage = (page: number) => {
 
 <template>
   <div class="flex min-h-screen w-fit md:w-full flex-col container">
-    <div class="flex flex-col sm:gap-6 sm:py-4">
+    <div class="flex flex-col gap-6 sm:py-4">
       <LandingJobsFilters />
       <section class="grid flex-1 items-start gap-4 md:gap-6 lg:grid-cols-3 xl:grid-cols-3">
         <div class="grid auto-rows-max items-start gap-4 md:gap-6 lg:col-span-2">
@@ -35,7 +35,7 @@ const changePage = (page: number) => {
               <Card
                 v-for="job in displayedJobs"
                 :key="job.id"
-                class="px-4 py-2 w-[350px] md:w-full cursor-pointer"
+                class="px-4 py-2 w-[calc(100vw-4rem)] md:w-full cursor-pointer"
               >
                 <NuxtLink :to="`/job/${job.id}`">
                   <section class="flex gap-2">

@@ -1,7 +1,24 @@
 <script setup lang="ts">
 import * as z from 'zod'
-import { h } from 'vue'
-import { useToast } from '../../components/ui/toast'
+import { useRoute } from 'vue-router'
+import { randomStr } from '@vue/devtools-shared'
+import { useToast } from '~/components/ui/toast'
+import type { Database } from '~~/utils/database.types'
+
+const supabase = useSupabaseClient<Database>()
+const { toast } = useToast()
+const route = useRoute()
+const id = route.params.id as string
+const isValid = ref(false)
+const targetEmail = ref('')
+const loading = ref(false)
+
+onMounted(async () => {
+  /**
+   * Validate if provided ID is valid and not used.
+   */
+  isValid.value = await validateID()
+})
 
 const schema = z.object({
   name: z
@@ -24,29 +41,151 @@ const schema = z.object({
 
   logo: z.string().optional(),
 
-  password: z
-    .string({
-      required_error: 'Password is required.',
-    })
-    .min(8, {
-      message: 'Password must be at least 8 characters.',
-    }),
+  password: z.string(),
+  confirm: z.string(),
 
-  confirmPassword: z
-    .string({
-      required_error: 'Password is required.',
-    })
-    .min(8, {
-      message: 'Password must be at least 8 characters.',
-    }),
-
+}).refine(data => data.password === data.confirm, {
+  message: 'Passwords must match.',
+  path: ['confirm'],
 })
-const { toast } = useToast()
-function onSubmit(values: Record<string, unknown>) {
-  toast({
-    title: 'You submitted the following values:',
-    description: h('pre', { class: 'mt-2 w-[340px] rounded-md bg-slate-950 p-4' }, h('code', { class: 'text-white' }, JSON.stringify(values, null, 2))),
-  })
+
+async function validateID() {
+  const { data, error } = await supabase
+    .rpc('validate_invite_id', {
+      p_id: id,
+    })
+
+  if (error) {
+    toast({
+      title: 'Error',
+      description: error.message,
+      variant: 'destructive',
+    })
+
+    return false
+  }
+
+  if (!data || data.length === 0 || !data[0]?.valid) {
+    toast({
+      title: 'Invalid ID',
+      description: 'The ID you provided is invalid. Please check the link and try again.',
+      variant: 'destructive',
+    })
+
+    return false
+  }
+
+  targetEmail.value = data[0].target_email
+  return true
+}
+
+async function onSubmit(values: Record<string, unknown>) {
+  if (!isValid.value) {
+    toast({
+      title: 'Invalid ID',
+      description: 'The ID you provided is invalid. Please check the link and try again.',
+      variant: 'destructive',
+    })
+    return
+  }
+
+  loading.value = true
+  try {
+    const signUpResult = await supabase.auth.signUp({
+      email: targetEmail.value,
+      password: values.password as string,
+    })
+
+    if (signUpResult.error) {
+      toast({
+        title: 'Error',
+        description: 'Error trying to sign-up user. Please try again.',
+        variant: 'destructive',
+      })
+      return
+    }
+
+    const { data: { session } } = await supabase.auth.getSession()
+    if (!session) {
+      toast({
+        title: 'Error',
+        description: 'Invalid session. Please try again.',
+        variant: 'destructive',
+      })
+      return
+    }
+
+    const userRoleResult = await supabase.rpc('insert_user_role', {
+      p_role: 'admin',
+      p_user_id: signUpResult.data.user?.id || '',
+    })
+
+    if (userRoleResult.error) {
+      toast({
+        title: 'Error',
+        description: 'Error trying to assign role to user. Please try again.',
+        variant: 'destructive',
+      })
+      return
+    }
+
+    const logoPathName = `${values.name as string}/logo-${randomStr()}.png`
+    const insertCompanyResult = await supabase.rpc('insert_company', {
+      p_admin_id: signUpResult.data.user?.id || '',
+      p_cover_path: '',
+      p_logo_path: logoPathName,
+      p_description: values.description as string,
+      p_name: values.name as string,
+    })
+
+    if (insertCompanyResult.error) {
+      toast({
+        title: 'Error',
+        description: 'Error trying to insert company. Please try again.',
+        variant: 'destructive',
+      })
+      return
+    }
+
+    const uploadImageResult = await supabase.storage
+      .from('nezohub')
+      .upload(logoPathName, values.logo as string, {
+        cacheControl: '3600',
+        upsert: false,
+      })
+
+    if (uploadImageResult.error) {
+      toast({
+        title: 'Error',
+        description: 'Error trying to upload image. Please try again.',
+        variant: 'destructive',
+      })
+      return
+    }
+
+    const updateInviteResult = await supabase.rpc('update_invite_used', {
+      p_invite_id: id,
+    })
+
+    if (updateInviteResult.error) {
+      toast({
+        title: 'Error',
+        description: 'Error trying to update invite. Please try again.',
+        variant: 'destructive',
+      })
+      return
+    }
+  }
+  catch (error) {
+    toast({
+      title: 'Error',
+      description: 'An unexpected error occurred during the submission.',
+      variant: 'destructive',
+    })
+  }
+  finally {
+    loading.value = false
+  }
 }
 </script>
 
@@ -120,9 +259,6 @@ function onSubmit(values: Record<string, unknown>) {
                 password: {
                   label: 'Your secure password',
                 },
-                confirmPassword: {
-                  label: 'Password Confirm',
-                },
 
                 description: {
                   component: 'textarea',
@@ -135,28 +271,10 @@ function onSubmit(values: Record<string, unknown>) {
               }"
               @submit="onSubmit"
             >
-              <template #acceptTerms="slotProps">
-                <AutoFormField v-bind="slotProps" />
-                <div class="!mt-2 text-sm">
-                  I agree to the <button class="text-primary underline">
-                    terms and conditions
-                  </button>.
-                </div>
-              </template>
-
-              <template #customParent="slotProps">
-                <div class="flex items-end space-x-2">
-                  <AutoFormField
-                    v-bind="slotProps"
-                    class="w-full"
-                  />
-                  <Button type="button">
-                    Check
-                  </Button>
-                </div>
-              </template>
-
-              <Button type="submit">
+              <Button
+                :disabled="!isValid"
+                type="submit"
+              >
                 Submit
               </Button>
             </AutoForm>

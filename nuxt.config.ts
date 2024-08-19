@@ -14,6 +14,7 @@ export default defineNuxtConfig({
     '@vueuse/nuxt',
     '@nuxtjs/i18n',
     '@nuxtjs/color-mode',
+    '@nuxtjs/supabase',
   ],
   i18n: {
     lazy: true,
@@ -51,6 +52,7 @@ export default defineNuxtConfig({
     kv: true,
     blob: false,
     cache: true,
+    ai: true,
   },
   nitro: {
     experimental: {

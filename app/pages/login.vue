@@ -1,5 +1,43 @@
 <script setup lang="ts">
+import { Eye, EyeOff, LoaderIcon } from 'lucide-vue-next'
+import type { Database } from '~~/utils/database.types'
+import { useToast } from '~/components/ui/toast'
 
+const supabase = useSupabaseClient<Database>()
+const user = useSupabaseUser()
+
+const email = ref('')
+const password = ref('')
+const isLoading = ref(false)
+
+const { query } = useRoute()
+watchEffect(async () => {
+  if (user.value) {
+    await navigateTo(query.redirectTo as string, {
+      replace: true,
+    })
+  }
+})
+
+const { toast } = useToast()
+const login = async () => {
+  isLoading.value = true
+  const { error } = await supabase.auth.signInWithPassword({
+    email: email.value,
+    password: password.value,
+  })
+
+  if (error) {
+    toast({
+      title: 'Error',
+      description: '' + error,
+      variant: 'destructive',
+    })
+  }
+  isLoading.value = false
+}
+
+const showPassword = ref(false)
 </script>
 
 <template>
@@ -19,6 +57,7 @@
             <Label for="email">Email</Label>
             <Input
               id="email"
+              v-model="email"
               type="email"
               placeholder="m@example.com"
               required
@@ -34,24 +73,40 @@
                 Forgot your password?
               </a>
             </div>
-            <Input
-              id="password"
-              type="password"
-              required
-            />
+            <div class="relative">
+              <Input
+                id="password"
+                v-model="password"
+
+                :type="showPassword ? 'text' : 'password'"
+                required
+              />
+              <component
+                :is="showPassword? EyeOff : Eye"
+                v-if="password"
+                class="w-5 h-5 absolute right-3 top-3 cursor-pointer"
+                @click="showPassword =!showPassword"
+              />
+            </div>
           </div>
           <Button
             type="submit"
             class="w-full"
+            :disabled="isLoading"
+            @click="login"
           >
-            Login
+            {{ isLoading ? 'Loading...': 'Login' }}
+            <LoaderIcon
+              v-if="isLoading"
+              class=" animate-spin ml-2"
+            />
           </Button>
-          <Button
+          <!-- <Button
             variant="outline"
             class="w-full"
           >
             Login with Google
-          </Button>
+          </Button> -->
         </div>
       </div>
     </div>

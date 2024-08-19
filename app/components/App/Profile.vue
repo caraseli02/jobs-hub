@@ -1,8 +1,26 @@
 <script setup lang="ts">
 import { CircleUser, LogInIcon, LogOutIcon } from 'lucide-vue-next'
 
-const isAuthenticated = ref(false)
+const user = useSupabaseUser()
+const supabase = useSupabaseClient()
+
+const logout = async () => {
+  const { error } = await supabase.auth.signOut()
+
+  if (error) {
+    console.error(error)
+    return
+  }
+
+  await navigateTo('/login')
+}
+
+const email = computed(
+  () => user.value?.app_metadata.email,
+)
 const { t } = useI18n()
+
+const router = useRouter()
 </script>
 
 <template>
@@ -19,30 +37,33 @@ const { t } = useI18n()
     <DropdownMenuContent align="end">
       <DropdownMenuLabel>{{ t("profile.myAccount") }}</DropdownMenuLabel>
       <DropdownMenuSeparator />
-      <template v-if="isAuthenticated">
+      <template v-if="user">
+        <DropdownMenuItem>{{ email }}</DropdownMenuItem>
+        <DropdownMenuItem @click="router.push('/dashboard')">
+          {{ t("profile.dashboard") }}
+        </DropdownMenuItem>
         <DropdownMenuItem>{{ t("profile.settings") }}</DropdownMenuItem>
-        <DropdownMenuItem>{{ t("profile.support") }}</DropdownMenuItem>
         <DropdownMenuSeparator />
+
+        <DropdownMenuItem
+          class="dark:text-slate-50"
+          @click="logout"
+        >
+          <LogOutIcon class="w-5 h-5 mr-1" />
+          {{ t("profile.logout") }}
+        </DropdownMenuItem>
       </template>
       <DropdownMenuItem
-        v-if="isAuthenticated"
+        v-if="!user"
         class="dark:text-slate-50"
-        @click="isAuthenticated = !isAuthenticated"
+        @click="router.push('/login')"
       >
-        <LogOutIcon class="w-5 h-5 mr-1" />
-        {{ t("profile.logout") }}
-      </DropdownMenuItem>
-      <DropdownMenuItem
-        v-if="!isAuthenticated"
-        class="dark:text-slate-50"
-      >
-        <NuxtLink
+        <div
           class="flex gap-1"
-          to="/login"
         >
           <LogInIcon class="w-5 h-5" />
           {{ t("profile.logIn") }}
-        </NuxtLink>
+        </div>
       </DropdownMenuItem>
     </DropdownMenuContent>
   </DropdownMenu>

@@ -7,7 +7,7 @@
     <div class="flex items-center gap-x-2 p-2">
       <NodeSelector :editor="editor" />
       <LinkSelector :editor="editor" />
-      <UiButton
+      <Button
         v-for="(item, index) in items"
         :key="index"
         size="sm"
@@ -22,7 +22,7 @@
             'text-blue-500': item.isActive(),
           }"
         />
-      </UiButton>
+      </Button>
       <!-- <ColorSelector :editor="editor" /> -->
     </div>
   </BubbleMenu>

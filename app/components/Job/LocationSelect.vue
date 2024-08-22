@@ -52,6 +52,7 @@ const citesOptions = computed(() => {
                 @select="(ev) => {
                   if (typeof ev.detail.value === 'string') {
                     selectedCountrie = ev.detail.value
+                    $emit('changeCountry', ev.detail.value)
                   }
                   open = false
                 }"
@@ -105,6 +106,7 @@ const citesOptions = computed(() => {
                 @select="(ev) => {
                   if (typeof ev.detail.value === 'string') {
                     selectedCity = ev.detail.value
+                    $emit('changeCity', ev.detail.value)
                   }
                   openCity = false
                 }"

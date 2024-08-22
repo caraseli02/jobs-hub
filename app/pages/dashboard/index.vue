@@ -106,7 +106,9 @@ const router = useRouter()
             </CardDescription>
           </CardHeader>
           <CardFooter>
-            <Button @click="router.push('/dashboard/post')">Create New Job</Button>
+            <Button @click="router.push('/dashboard/post')">
+              Create New Job
+            </Button>
           </CardFooter>
         </Card>
         <Card>

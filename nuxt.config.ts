@@ -15,6 +15,7 @@ export default defineNuxtConfig({
     '@nuxtjs/i18n',
     '@nuxtjs/color-mode',
     '@nuxtjs/supabase',
+    'nuxt-tiptap-editor',
   ],
   i18n: {
     lazy: true,

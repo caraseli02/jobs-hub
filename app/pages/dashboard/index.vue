@@ -232,13 +232,15 @@ const router = useRouter()
                     </div>
                   </TableCell>
                   <TableCell class="text-right min-w-[200px]">
-                    <Button
-                      class="mr-4 "
-                      variant="outline"
-                      size="sm"
-                    >
-                      View Applications
-                    </Button>
+                    <NuxtLink :to="`/dashboard/${job.id}`">
+                      <Button
+                        class="mr-4 "
+                        variant="outline"
+                        size="sm"
+                      >
+                        View Applications
+                      </Button>
+                    </NuxtLink>
                     <DropdownMenu>
                       <DropdownMenuTrigger as-child>
                         <Button

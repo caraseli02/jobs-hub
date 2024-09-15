@@ -63,7 +63,7 @@ const items = [
             Apply for this job
           </Button>
         </DialogTrigger>
-        <DialogContent>
+        <DialogContent class="max-w-[90vw] max-h-[90vh] overflow-y-auto">
           <JobApplyForm />
         </DialogContent>
       </Dialog>

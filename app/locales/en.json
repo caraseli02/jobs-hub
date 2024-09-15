@@ -30,12 +30,13 @@
     "toggleUserMenu": "Toggle user menu",
     "myAccount": "My Account",
     "settings": "Settings",
-    "support": "Support",
+    "dashboard": "Dashboard",
     "logout": "Logout",
     "createAccount": "Create Account",
     "logIn": "Log In"
   },
     "menu": {
-    "home": "Home"
+    "home": "Home",
+    "dashboard": "Dashboard"
   }
 }

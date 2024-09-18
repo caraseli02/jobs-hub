@@ -1,6 +1,6 @@
 import * as z from 'zod'
 
-enum EducationLevel {
+export enum EducationLevel {
   HighSchool = 'High School',
   Associate = 'Associate',
   Bachelor = 'Bachelor',
@@ -8,7 +8,7 @@ enum EducationLevel {
   Doctorate = 'Doctorate',
 }
 
-enum ExperienceLevel {
+export enum ExperienceLevel {
   Internship = 'Internship',
   EntryLevel = 'Entry Level',
   MidLevel = 'Mid Level',
@@ -16,7 +16,7 @@ enum ExperienceLevel {
   Executive = 'Executive',
 }
 
-enum JobType {
+export enum JobType {
   FullTime = 'Full Time',
   PartTime = 'Part Time',
   Contract = 'Contract',
@@ -43,6 +43,8 @@ export const formSchema = {
     })
     .default('JavaScript, Vue, TypeScript'),
 
+  experationDay: z.coerce.date().optional(),
+
   minSalary: z.coerce
     .number({
       invalid_type_error: 'Minimum salary must be a number.',
@@ -60,6 +62,6 @@ export const formSchema = {
   jobType: z.nativeEnum(JobType).optional(),
   expirationDate: z.coerce.date().optional(),
 
-  countrie: z.string().optional(),
+  country: z.string().optional(),
   city: z.string().optional(),
 }

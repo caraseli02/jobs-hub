@@ -9,7 +9,8 @@
     "postinstall": "nuxt prepare",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "typecheck": "nuxt typecheck"
+    "typecheck": "nuxt typecheck",
+    "db:generate": "drizzle-kit generate"
   },
   "dependencies": {
     "@nuxt/eslint": "^0.4.0",
@@ -23,6 +24,7 @@
     "@vueuse/core": "^10.11.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "drizzle-orm": "^0.33.0",
     "lucide-vue-next": "^0.424.0",
     "nuxt": "^3.12.4",
     "radix-vue": "^1.9.3",
@@ -47,6 +49,7 @@
     "@tiptap/extension-text-style": "^2.6.4",
     "@tiptap/extension-underline": "^2.6.4",
     "@vueuse/nuxt": "^10.11.0",
+    "drizzle-kit": "^0.24.2",
     "eslint": "^8.57.0",
     "nuxt-tiptap-editor": "^1.2.1",
     "typescript": "^5.5.4",

@@ -4,9 +4,12 @@ import { ref, h } from 'vue'
 import { Sparkles, Loader } from 'lucide-vue-next'
 import { useForm } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/zod'
-import { formSchema } from './schema'
-import { Button } from '@/components/ui/button'
+import { toDate } from 'radix-vue/date'
+import { type DateValue } from '@internationalized/date'
+import { formSchema, EducationLevel, ExperienceLevel, JobType } from './schema'
+import FormFieldItem from './FormFieldItem.vue'
 import { toast } from '@/components/ui/toast'
+import { cn } from '@/lib/utils.js'
 
 // Schema using native enums
 const schema = toTypedSchema(
@@ -16,7 +19,8 @@ const schema = toTypedSchema(
 const { handleSubmit, resetForm, values, setFieldValue } = useForm({
   validationSchema: schema,
 })
-
+const jobSections = ['Overview', 'Requirements', 'Responsibilities', 'Qualities', 'Skills', 'Desirable', 'Benefits']
+const selectedJobSections = ref<string[]>([])
 const isLoading = ref(false)
 const responseText = ref('')
 const editor = ref()
@@ -27,18 +31,10 @@ const generateDescription = async () => {
     // @ts-expect-error
     responseText.value = await $fetch('/api/ai/test', {
       method: 'POST',
-      body: JSON.stringify({
-        msg: `
-        ${JSON.stringify(values)}
-        - generate job description using bellow object 
-        - should have this sections: Overview, Requirements, Responsibilities, Qualities, Skills, Desirable, Benefits
-        - each title should be wrapped in with h3 tag
-        - each option should be in span tag
-        - the description should be in p tag
-        - the response should be possible to inserted in tip tap editor as html and each part to be editable
-        - Do not add any additional information, start directly with the description
-        `,
-      }),
+      body: {
+        values,
+        selectedJobSections: selectedJobSections.value,
+      }
     })
     editor.value.insertNew(responseText.value.response)
   }
@@ -61,6 +57,47 @@ function onSubmit() {
   })
   resetForm()
 }
+
+const toggleJobSections = (section: string) => {
+  const index = selectedJobSections.value.indexOf(section)
+  if (index === -1) {
+    selectedJobSections.value.push(section)
+  }
+  else {
+    selectedJobSections.value.splice(index, 1)
+  }
+}
+
+// Define reusable field configuration arrays
+const textFields = [
+  { name: 'title', label: 'Job title', type: 'text' },
+  { name: 'skills', label: 'Skills', type: 'text' },
+]
+
+const salaryFields = [
+  { name: 'minSalary', label: 'Minimum salary', type: 'number' },
+  { name: 'maxSalary', label: 'Maximum salary', type: 'number' },
+]
+
+const selectFields = [
+  { name: 'education', label: 'Education Level', options: Object.values(EducationLevel) },
+  { name: 'experience', label: 'Experience Level', options: Object.values(ExperienceLevel) },
+  { name: 'jobType', label: 'Job Type', options: Object.values(JobType) },
+]
+
+const router = useRouter()
+const makePost = async () => {
+  const description = await editor.value.getEditorContent()
+  await $fetch('/api/job/', {
+    method: 'POST',
+    body: { values: { ...values, description } },
+  })
+  router.push('/dashboard')
+}
+
+const setExpirationDate = (date: DateValue) => {
+  setFieldValue('expirationDate', toDate(date))
+}
 </script>
 
 <template>
@@ -68,34 +105,34 @@ function onSubmit() {
     class="container mx-auto md:grid md:grid-cols-3 gap-2"
     @submit.prevent="handleSubmit(onSubmit)"
   >
-    <FormField
-      v-slot="{ componentField }"
-      name="title"
-    >
-      <FormItem>
-        <FormLabel>Job title</FormLabel>
-        <FormControl>
-          <Input
-            type="text"
-            v-bind="componentField"
-          />
-        </FormControl>
-        <FormMessage />
-      </FormItem>
-    </FormField>
+    <!-- Reusable FormFieldItem for text inputs -->
+    <FormFieldItem
+      v-for="(field, index) in textFields"
+      :key="index"
+      :field="field"
+    />
 
-    <FormField
-      v-slot="{ componentField }"
-      name="skills"
-    >
-      <FormItem>
-        <FormLabel>Skills</FormLabel>
-        <FormControl>
-          <Input
-            type="text"
-            v-bind="componentField"
-          />
-        </FormControl>
+    <FormField name="doe">
+      <FormItem class="flex flex-col gap-2">
+        <FormLabel>Date of expiration</FormLabel>
+        <Popover>
+          <PopoverTrigger as-child>
+            <Button
+              variant="outline"
+              :class="cn(
+                'w-full h-12 justify-start text-left font-normal',
+              )"
+            >
+              <CalendarIcon class="mr-2 h-4 w-4" />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent class="w-auto p-0">
+            <Calendar
+              initial-focus
+              @update:model-value="setExpirationDate($event)"
+            />
+          </PopoverContent>
+        </Popover>
         <FormMessage />
       </FormItem>
     </FormField>
@@ -106,37 +143,12 @@ function onSubmit() {
       </h4>
     </div>
 
-    <FormField
-      v-slot="{ componentField }"
-      name="minSalary"
-    >
-      <FormItem>
-        <FormLabel>Minimum salary</FormLabel>
-        <FormControl>
-          <Input
-            type="number"
-            v-bind="componentField"
-          />
-        </FormControl>
-        <FormMessage />
-      </FormItem>
-    </FormField>
-
-    <FormField
-      v-slot="{ componentField }"
-      name="maxSalary"
-    >
-      <FormItem>
-        <FormLabel>Maximum salary</FormLabel>
-        <FormControl>
-          <Input
-            type="number"
-            v-bind="componentField"
-          />
-        </FormControl>
-        <FormMessage />
-      </FormItem>
-    </FormField>
+    <!-- Salary Fields -->
+    <FormFieldItem
+      v-for="(field, index) in salaryFields"
+      :key="index"
+      :field="field"
+    />
 
     <div class="md:col-span-3">
       <h4 class="my-4 text-lg font-bold">
@@ -144,134 +156,72 @@ function onSubmit() {
       </h4>
     </div>
 
-    <FormField
-      v-slot="{ componentField }"
-      name="education"
-    >
-      <FormItem>
-        <FormLabel>Education Level</FormLabel>
-        <FormControl>
-          <Select
-            v-bind="componentField"
-            class="w-full mt-1"
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Select a Education" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectItem
-                  v-for="level in Object.values(EducationLevel)"
-                  :key="level"
-                  :value="level"
-                >
-                  {{ level }}
-                </SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-        </FormControl>
-        <FormMessage />
-      </FormItem>
-    </FormField>
-    <FormField
-      v-slot="{ componentField }"
-      name="experience"
-    >
-      <FormItem>
-        <FormLabel>Experience Level</FormLabel>
-        <FormControl>
-          <Select
-            v-bind="componentField"
-            class="w-full mt-1"
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Select a Experience" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectItem
-                  v-for="level in Object.values(ExperienceLevel)"
-                  :key="level"
-                  :value="level"
-                >
-                  {{ level }}
-                </SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-        </FormControl>
-        <FormMessage />
-      </FormItem>
-    </FormField>
-    <FormField
-      v-slot="{ componentField }"
-      name="jobType"
-    >
-      <FormItem>
-        <FormLabel>Job Type</FormLabel>
-        <FormControl>
-          <Select
-            v-bind="componentField"
-            class="w-full mt-1"
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Job Type" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectItem
-                  v-for="level in Object.values(JobType)"
-                  :key="level"
-                  :value="level"
-                >
-                  {{ level }}
-                </SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-        </FormControl>
-        <FormMessage />
-      </FormItem>
-    </FormField>
+    <!-- Dynamic Education, Experience, Job Type Select Fields -->
+    <FormFieldItem
+      v-for="(field, index) in selectFields"
+      :key="index"
+      :field="field"
+      :options="field.options"
+    />
 
     <!-- Job Location Select Component -->
     <JobLocationSelect
-      @change-country="setFieldValue('countrie', $event)"
+      @change-country="setFieldValue('country', $event)"
       @change-city="setFieldValue('city', $event)"
     />
 
+    <!-- Job Description Section -->
     <div class="md:col-span-3 mt-4">
       <section class="flex items-center gap-4">
         <h4 class="my-4 text-lg font-bold">
           Job Description
         </h4>
-        <Button
-          variant="outline"
-          @click.prevent.stop="generateDescription"
-        >
-          <Loader
-            v-if="isLoading"
-            class="w-4 h-4 mr-2 animate-spin"
-          />
-          <Sparkles
-            v-else
-            class="w-4 h-4 mr-2"
-          />
-          Generate
-        </Button>
+        <Popover>
+          <PopoverTrigger>
+            <Button variant="outline">
+              <Loader
+                v-if="isLoading"
+                class="w-4 h-4 mr-2 animate-spin"
+              />
+              <Sparkles
+                v-else
+                class="w-4 h-4 mr-2"
+              />
+              Generate
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent class="flex flex-col gap-3">
+            <div
+              v-for="item in jobSections"
+              :key="item"
+              class="flex items-center space-x-2"
+              @click="toggleJobSections(item)"
+            >
+              <Checkbox :checked="selectedJobSections.includes(item)" />
+              <label
+                :for="item"
+                class="text-sm font-medium"
+              >{{ item }}</label>
+            </div>
+            <Button
+              size="xs"
+              @click.prevent.stop="generateDescription"
+            >
+              Start
+            </Button>
+          </PopoverContent>
+        </Popover>
       </section>
       <TipTapEditor ref="editor" />
     </div>
 
     <div class="md:col-span-3 flex justify-end mt-8">
-      <Button type="submit">
+      <Button
+        type="submit"
+        @click="makePost"
+      >
         Post Job
       </Button>
     </div>
   </form>
 </template>
-
-<style scoped>
-
-</style>

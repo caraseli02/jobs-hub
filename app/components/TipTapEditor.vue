@@ -34,7 +34,11 @@ const insertNew = (text) => {
   editor.value.commands.focus()
 }
 
-defineExpose({ insertNew })
+const getEditorContent = () => {
+  return editor.value.getHTML()
+}
+
+defineExpose({ insertNew, getEditorContent })
 
 onBeforeUnmount(() => {
   unref(editor).destroy()

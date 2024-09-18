@@ -3,16 +3,37 @@ import { CaretSortIcon, CheckIcon } from '@radix-icons/vue'
 import { countries } from '@/data/countries'
 import { cn } from '@/lib/utils.js'
 
+type Country = typeof countries[number]
+
 const open = ref(false)
 const openCity = ref(false)
 const selectedCountrie = ref('')
 const selectedCity = ref('')
+
+const countriesList = ref<Country[]>([])
 
 const citesOptions = computed(() => {
   if (selectedCountrie.value) {
     return countries.find(item => item.value === selectedCountrie.value)?.regions
   }
   return []
+})
+
+//
+watch(open, (newVal) => {
+  if (newVal) {
+  // push 20 items to countriesList and the rest after 500ms
+    countriesList.value = countries.slice(0, 20)
+
+    setTimeout(() => {
+      countriesList.value.push(...countries.slice(20))
+    }, 500)
+  }
+  else {
+    setTimeout(() => {
+      countriesList.value = []
+    }, 500)
+  }
 })
 </script>
 
@@ -36,7 +57,7 @@ const citesOptions = computed(() => {
           <CaretSortIcon class="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent class="w-full p-0">
+      <PopoverContent class="w-full min-w-[366px] md:min-w-[440px] p-0">
         <Command>
           <CommandInput
             class="h-9"
@@ -46,7 +67,7 @@ const citesOptions = computed(() => {
           <CommandList>
             <CommandGroup>
               <CommandItem
-                v-for="countrie in countries"
+                v-for="countrie in countriesList"
                 :key="countrie.value"
                 :value="countrie.value"
                 @select="(ev) => {

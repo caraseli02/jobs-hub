@@ -1,11 +1,14 @@
 <script setup lang="ts">
 import * as z from 'zod'
 import { ref, h } from 'vue'
-import { Sparkles, Loader } from 'lucide-vue-next'
+import { Sparkles, Loader,
+
+  CalendarIcon,
+} from 'lucide-vue-next'
 import { useForm } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/zod'
 import { toDate } from 'radix-vue/date'
-import { type DateValue } from '@internationalized/date'
+import { type DateValue, getLocalTimeZone, parseDate, today, DateFormatter } from '@internationalized/date'
 import { formSchema, EducationLevel, ExperienceLevel, JobType } from './schema'
 import FormFieldItem from './FormFieldItem.vue'
 import { toast } from '@/components/ui/toast'
@@ -16,7 +19,7 @@ const schema = toTypedSchema(
   z.object(formSchema),
 )
 
-const { handleSubmit, resetForm, values, setFieldValue } = useForm({
+const { handleSubmit, values, setFieldValue, } = useForm({
   validationSchema: schema,
 })
 const jobSections = ['Overview', 'Requirements', 'Responsibilities', 'Qualities', 'Skills', 'Desirable', 'Benefits']
@@ -34,7 +37,7 @@ const generateDescription = async () => {
       body: {
         values,
         selectedJobSections: selectedJobSections.value,
-      }
+      },
     })
     editor.value.insertNew(responseText.value.response)
   }
@@ -45,18 +48,16 @@ const generateDescription = async () => {
     isLoading.value = false
   }
 }
+const router = useRouter()
 
-function onSubmit() {
-  toast({
-    title: 'You submitted the following values:',
-    description: h(
-      'pre',
-      { class: 'mt-2 w-[340px] rounded-md bg-slate-950 p-4' },
-      h('code', { class: 'text-white' }, JSON.stringify(values, null, 2)),
-    ),
+const onSubmit = handleSubmit(async (values) => {
+  const description = editor.value.getEditorContent()
+  await $fetch('/api/job/', {
+    method: 'POST',
+    body: { values: { ...values, description } },
   })
-  resetForm()
-}
+  router.push('/dashboard')
+})
 
 const toggleJobSections = (section: string) => {
   const index = selectedJobSections.value.indexOf(section)
@@ -85,25 +86,25 @@ const selectFields = [
   { name: 'jobType', label: 'Job Type', options: Object.values(JobType) },
 ]
 
-const router = useRouter()
-const makePost = async () => {
-  const description = await editor.value.getEditorContent()
-  await $fetch('/api/job/', {
-    method: 'POST',
-    body: { values: { ...values, description } },
-  })
-  router.push('/dashboard')
-}
-
 const setExpirationDate = (date: DateValue) => {
   setFieldValue('expirationDate', toDate(date))
 }
+
+const placeholder = ref()
+const expirationDate = computed({
+  get: () => values.experationDay ? parseDate(new Date(values.experationDay).toISOString()) : undefined,
+  set: val => val,
+})
+
+const df = new DateFormatter('en-US', {
+  dateStyle: 'long',
+})
 </script>
 
 <template>
   <form
     class="container mx-auto md:grid md:grid-cols-3 gap-2"
-    @submit.prevent="handleSubmit(onSubmit)"
+    @submit="onSubmit"
   >
     <!-- Reusable FormFieldItem for text inputs -->
     <FormFieldItem
@@ -116,7 +117,7 @@ const setExpirationDate = (date: DateValue) => {
       <FormItem class="flex flex-col gap-2">
         <FormLabel>Date of expiration</FormLabel>
         <Popover>
-          <PopoverTrigger as-child>
+          <!-- <PopoverTrigger as-child>
             <Button
               variant="outline"
               :class="cn(
@@ -125,11 +126,36 @@ const setExpirationDate = (date: DateValue) => {
             >
               <CalendarIcon class="mr-2 h-4 w-4" />
             </Button>
+          </PopoverTrigger> -->
+          <PopoverTrigger as-child>
+            <FormControl>
+              <Button
+                variant="outline" :class="cn(
+                  'w-[240px] ps-3 text-start font-normal',
+                  !expirationDate && 'text-muted-foreground',
+                )"
+              >
+                <span>{{ expirationDate ? df.format(toDate(expirationDate)) : "Pick a date" }}</span>
+                <CalendarIcon class="ms-auto h-4 w-4 opacity-50" />
+              </Button>
+              <input hidden>
+            </FormControl>
           </PopoverTrigger>
           <PopoverContent class="w-auto p-0">
             <Calendar
+              v-model:placeholder="placeholder"
+              v-model="expirationDate"
+              calendar-label="Date of expiration"
               initial-focus
-              @update:model-value="setExpirationDate($event)"
+              :min-value="today(getLocalTimeZone())"
+              @update:model-value="(v) => {
+                if (v) {
+                  setFieldValue('expirationDate', toDate(v))
+                }
+                else {
+                  setFieldValue('expirationDate', undefined)
+                }
+              }"
             />
           </PopoverContent>
         </Popover>
@@ -218,7 +244,6 @@ const setExpirationDate = (date: DateValue) => {
     <div class="md:col-span-3 flex justify-end mt-8">
       <Button
         type="submit"
-        @click="makePost"
       >
         Post Job
       </Button>

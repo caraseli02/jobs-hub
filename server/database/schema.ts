@@ -1,7 +1,7 @@
 import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core'
 
 export const jobs = sqliteTable('jobs', {
-  id: text('id').primaryKey(),  // Using text to match the UUID
+  id: text('id').primaryKey(), // Using text to match the UUID
   title: text('title').notNull(),
   skills: text('skills'),
   minSalary: integer('min_salary'),
@@ -13,6 +13,7 @@ export const jobs = sqliteTable('jobs', {
   country: text('country'),
   city: text('city'),
   status: text('status').default('active'),
+  applications: integer('applications', { mode: 'number' }).default(0),
   expirationDate: integer('expirationDate', { mode: 'timestamp' }),
   createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
 })

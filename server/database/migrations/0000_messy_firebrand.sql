@@ -11,6 +11,7 @@ CREATE TABLE `jobs` (
 	`country` text,
 	`city` text,
 	`status` text DEFAULT 'active',
+	`applications` integer DEFAULT 0,
 	`expirationDate` integer,
 	`created_at` integer NOT NULL
 );

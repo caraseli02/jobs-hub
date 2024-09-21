@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "1d096fe6-276c-4367-b54d-2bbcaae8a23a",
+  "id": "e8d9317e-d6bf-4902-a5fe-6372034a9169",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "jobs": {
@@ -91,6 +91,14 @@
           "notNull": false,
           "autoincrement": false,
           "default": "'active'"
+        },
+        "applications": {
+          "name": "applications",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": 0
         },
         "expirationDate": {
           "name": "expirationDate",

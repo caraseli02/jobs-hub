@@ -3,148 +3,29 @@ import {
   File,
   ListFilter,
   UsersIcon,
-  TrendingDown,
-  TrendingUp,
 } from 'lucide-vue-next'
 
-// Mock job posting data
-const jobs = [
-  {
-    id: 1,
-    title: 'UI/UX Designer',
-    type: 'Full Time',
-    status: 'Active',
-    daysRemaining: 6,
-    applications: 798,
-  },
-  {
-    id: 2,
-    title: 'Senior UX Designer',
-    type: 'Internship',
-    status: 'Active',
-    daysRemaining: 8,
-    applications: 185,
-  },
-  {
-    id: 3,
-    title: 'Junior Graphic Designer',
-    type: 'Full Time',
-    status: 'Active',
-    daysRemaining: 24,
-    applications: 583,
-  },
-  {
-    id: 4,
-    title: 'Front End Developer',
-    type: 'Full Time',
-    status: 'Expire',
-    daysRemaining: 0,
-    applications: 740,
-  },
-  {
-    id: 5,
-    title: 'Technical Support Specialist',
-    type: 'Part Time',
-    status: 'Active',
-    daysRemaining: 4,
-    applications: 556,
-  },
-  {
-    id: 6,
-    title: 'Interaction Designer',
-    type: 'Contract Base',
-    status: 'Expire',
-    daysRemaining: 0,
-    applications: 426,
-  },
-  {
-    id: 7,
-    title: 'Software Engineer',
-    type: 'Temporary',
-    status: 'Active',
-    daysRemaining: 9,
-    applications: 922,
-  },
-  {
-    id: 8,
-    title: 'Product Designer',
-    type: 'Full Time',
-    status: 'Active',
-    daysRemaining: 7,
-    applications: 994,
-  },
-  {
-    id: 9,
-    title: 'Project Manager',
-    type: 'Full Time',
-    status: 'Expire',
-    daysRemaining: 0,
-    applications: 196,
-  },
-  {
-    id: 10,
-    title: 'Marketing Manager',
-    type: 'Full Time',
-    status: 'Active',
-    daysRemaining: 4,
-    applications: 492,
-  },
-]
+const { data: jobs, refresh } = await useFetch('/api/job')
 
-const router = useRouter()
+const makeTheJobExpired = async (id: string) => {
+  await $fetch(`/api/job/${id}`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: { status: 'expired' },
+  })
+  refresh()
+}
+
+const deleteJob = async (id: string) => {
+  await $fetch(`/api/job/${id}`, { method: 'DELETE' })
+  refresh()
+}
 </script>
 
 <template>
   <div class="flex min-h-screen w-full flex-col mt-8 container">
     <div class="grid auto-rows-max items-start gap-4 md:gap-8 lg:col-span-2">
-      <div class="grid gap-4 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4">
-        <Card class="sm:col-span-2">
-          <CardHeader class="pb-3">
-            <CardTitle>Jobs</CardTitle>
-            <CardDescription class="max-w-lg text-balance leading-relaxed">
-              Consult, edit and manage the Jobs you posted.
-            </CardDescription>
-          </CardHeader>
-          <CardFooter>
-            <Button @click="router.push('/dashboard/post')">
-              Create New Job
-            </Button>
-          </CardFooter>
-        </Card>
-        <Card>
-          <CardHeader class="pb-2">
-            <CardDescription>This Week Applications</CardDescription>
-            <CardTitle class="text-3xl">
-              +29
-            </CardTitle>
-          </CardHeader>
-          <CardContent class="flex justify-between">
-            <div class="text-sm text-muted-foreground">
-              +25% from last week
-            </div>
-            <TrendingUp
-              class="w-5 h-5"
-            />
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader class="pb-2">
-            <CardDescription>This Month Applications</CardDescription>
-            <CardTitle class="text-3xl">
-              +129
-            </CardTitle>
-          </CardHeader>
-          <CardContent class="flex justify-between">
-            <div class="text-sm text-muted-foreground">
-              -10% from last month
-            </div>
-            <TrendingDown
-              class="w-5 h-5"
-            />
-          </CardContent>
-        </Card>
-      </div>
-
+      <DashboardJobStatistics />
       <Tabs default-value="all">
         <div class="flex items-center">
           <TabsList>
@@ -214,13 +95,13 @@ const router = useRouter()
                       {{ job.title }}
                     </div>
                     <div class="text-sm text-muted-foreground">
-                      {{ job.type }} • {{ job.daysRemaining }} days remaining
+                      {{ job.jobType }} • ends {{ useTimeAgo(job.expirationDate) }}
                     </div>
                   </TableCell>
                   <TableCell class="hidden sm:table-cell min-w-[150px]">
                     <Badge
-                      :variant="job.status === 'Active' ? 'outline' : 'destructive'"
-                      class="text-xs"
+                      :variant="job.status === 'active' ? 'outline' : 'destructive'"
+                      class="text-xs capitalize"
                     >
                       {{ job.status }}
                     </Badge>
@@ -252,8 +133,17 @@ const router = useRouter()
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuItem>View Detail</DropdownMenuItem>
-                        <DropdownMenuItem>Make It Expire</DropdownMenuItem>
+                        <DropdownMenuItem>
+                          <NuxtLink :to="`/dashboard/${job.id}`">
+                            View Applications
+                          </NuxtLink>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem @click="makeTheJobExpired(job.id)">
+                          Make It Expire
+                        </DropdownMenuItem>
+                        <DropdownMenuItem @click="deleteJob(job.id)">
+                         Delete
+                        </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </TableCell>

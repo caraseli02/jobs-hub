@@ -59,7 +59,7 @@ export const formSchema = {
 
   education: z.nativeEnum(EducationLevel).optional(),
   experience: z.nativeEnum(ExperienceLevel).optional(),
-  jobType: z.nativeEnum(JobType).optional(),
+  jobType: z.nativeEnum(JobType),
   expirationDate: z.coerce.date().optional(),
 
   country: z.string().optional(),

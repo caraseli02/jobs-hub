@@ -42,7 +42,7 @@ const router = useRouter()
         <DropdownMenuItem @click="router.push('/dashboard')">
           {{ t("profile.dashboard") }}
         </DropdownMenuItem>
-        <DropdownMenuItem>{{ t("profile.settings") }}</DropdownMenuItem>
+        <DropdownMenuItem @click="router.push('/settings')">{{ t("profile.settings") }}</DropdownMenuItem>
         <DropdownMenuSeparator />
 
         <DropdownMenuItem

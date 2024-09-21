@@ -3,7 +3,6 @@ export default eventHandler(async (event) => {
   const id = crypto.randomUUID()
   const oneMonthFromNow = new Date()
   oneMonthFromNow.setMonth(oneMonthFromNow.getMonth() + 1)
-  console.log(values)
 
   const todo = await useDrizzle().insert(tables.jobs).values({
     title: values.title,

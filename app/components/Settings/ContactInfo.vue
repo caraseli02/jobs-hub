@@ -44,7 +44,29 @@ const { handleSubmit, resetForm } = useForm({
   },
 })
 
-const onSubmit = handleSubmit((values) => {
+const user = useSupabaseUser()
+
+async function updateCompanyData(values: Record<string, unknown>) {
+  try {
+    await $fetch(`/api/companies/${user.value.id}`, {
+      method: 'PATCH',
+      body: { values },
+
+    })
+    toast({
+      title: 'Company data updated successfully!',
+    })
+  }
+  catch (error) {
+    console.error('Failed to save to database:', error)
+    toast({
+      title: 'Failed to updated company',
+    })
+  }
+}
+
+const onSubmit = handleSubmit(async (values) => {
+  await updateCompanyData(values)
   toast({
     title: 'You submitted the following values:',
     description: h('pre', { class: 'mt-2 w-[340px] rounded-md bg-slate-950 p-4' }, h('code', { class: 'text-white' }, JSON.stringify(values, null, 2))),

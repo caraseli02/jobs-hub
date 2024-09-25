@@ -2,6 +2,9 @@
 import { BadgeCheck, Building2, MapPin, BriefcaseBusiness, UsersRoundIcon } from 'lucide-vue-next'
 import InfoItem from './InfoItem.vue'
 import SocialLinks from './SocialLinks.vue'
+
+const user = useSupabaseUser()
+
 </script>
 
 <template>
@@ -10,8 +13,7 @@ import SocialLinks from './SocialLinks.vue'
       <section class="hidden md:flex flex-col px-px w-full text-4xl font-bold text-right rounded-lg max-md:max-w-full">
         <div class="flex relative flex-col px-16 py-12 rounded-lg min-h-[191px] max-md:px-5 max-md:max-w-full">
           <img
-            loading="lazy"
-            src="https://picsum.photos/1800/200"
+            :src="`/images/${user?.id}/banner.png`"
             alt=""
             class="object-cover absolute inset-0 size-full rounded-t-lg"
           >
@@ -66,7 +68,7 @@ import SocialLinks from './SocialLinks.vue'
         >
           <img
             loading="lazy"
-            src="https://picsum.photos/112"
+            :src="`/images/${user?.id}/logo.png`"
             alt=""
             class="object-cover max-w-28 max-h-28 absolute inset-0 size-full rounded-lg ring-2 ring-white"
           >

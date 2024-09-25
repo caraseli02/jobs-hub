@@ -1,6 +1,5 @@
 export default eventHandler(async (event) => {
-  const { values } = await readBody(event)
-  const id = crypto.randomUUID()
+  const { values, userId } = await readBody(event)
   const oneMonthFromNow = new Date()
   oneMonthFromNow.setMonth(oneMonthFromNow.getMonth() + 1)
 
@@ -10,7 +9,7 @@ export default eventHandler(async (event) => {
     organizationType: values.organizationType,
     industryType: values.industryType,
     aboutUs: values.aboutUs,
-    id,
+    id: userId,
     createdAt: new Date(),
   }).returning().get()
 

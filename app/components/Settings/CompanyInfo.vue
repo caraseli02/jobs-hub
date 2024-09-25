@@ -6,10 +6,6 @@ import { Button } from '@/components/ui/button'
 import { toast } from '@/components/ui/toast'
 import { AutoForm, AutoFormField } from '@/components/ui/auto-form'
 
-// definePageMeta({
-//   middleware: 'auth',
-// })
-
 const emit = defineEmits(['showNextTab'])
 
 const schema = z.object({
@@ -34,6 +30,8 @@ const schema = z.object({
   aboutUs: z.string().optional(),
 })
 
+const user = useSupabaseUser()
+
 async function uploadImage(file: File) {
   // transfer string image to file
   const form = new FormData()
@@ -49,7 +47,7 @@ async function saveToDb(values: Record<string, unknown>) {
   try {
     await $fetch('/api/companies', {
       method: 'POST',
-      body: { values },
+      body: { values, userId: user.value.id },
 
     })
     toast({
@@ -80,13 +78,12 @@ function parseStringToFile(dataUrl: string, fileName: string): File {
 
 async function onSubmit(values: Record<string, unknown>) {
   if (values.logo) {
-    await uploadImage(parseStringToFile(values.logo as string, values.companyName + '_logo.png'))
+    await uploadImage(parseStringToFile(values.logo as string, 'logo.png'))
   }
   if (values.banner) {
-    await uploadImage(parseStringToFile(values.banner as string, values.companyName + '_banner.png'))
+    await uploadImage(parseStringToFile(values.banner as string, 'banner.png'))
   }
   saveToDb(values)
-  return
   emit('showNextTab')
   toast({
     title: 'You submitted the following values:',

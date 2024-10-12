@@ -1,15 +1,9 @@
 <template>
-  <main class="flex flex-col gap-6">
-    <LandingHeader />
-    <LandingJobs />
-  </main>
+  <LandingJobSearchHero />
 </template>
 
 <script setup lang="ts">
-onMounted(async () => {
-  const images = await $fetch('/api/images')
-  console.log(images)
-})
+
 </script>
 
 <style scoped>

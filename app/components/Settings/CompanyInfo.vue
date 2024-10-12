@@ -2,33 +2,14 @@
 import * as z from 'zod'
 import { h } from 'vue'
 import { ArrowRight } from 'lucide-vue-next'
+import { companySchema } from './schemas'
 import { Button } from '@/components/ui/button'
 import { toast } from '@/components/ui/toast'
 import { AutoForm, AutoFormField } from '@/components/ui/auto-form'
 
 const emit = defineEmits(['showNextTab'])
 
-const schema = z.object({
-  logo: z.string().optional(),
-  banner: z.string().optional(),
-  companyName: z
-    .string({
-      required_error: 'Job title is required.',
-    })
-    .min(2, {
-      message: 'Job title must be at least 2 characters.',
-    }),
-  companyWebsite: z
-    .string({
-      required_error: 'Job title is required.',
-    })
-    .min(2, {
-      message: 'Job title must be at least 2 characters.',
-    }).url(),
-  organizationType: z.enum(['corporation', 'non profit', 'government', 'startup', 'educational']).optional(),
-  industryTypes: z.enum(['technology', 'healthcare', 'finance', 'manufacturing', 'education']).optional(),
-  aboutUs: z.string().optional(),
-})
+const schema = z.object(companySchema)
 
 const user = useSupabaseUser()
 
@@ -62,20 +43,6 @@ async function saveToDb(values: Record<string, unknown>) {
   }
 }
 
-function parseStringToFile(dataUrl: string, fileName: string): File {
-  const arr = dataUrl.split(',')
-  const mime = arr[0]?.match(/:(.*?);/)?.[1] || ''
-  const bstr = atob(arr[1])
-  let n = bstr.length
-  const u8arr = new Uint8Array(n)
-
-  while (n--) {
-    u8arr[n] = bstr.charCodeAt(n)
-  }
-
-  return new File([u8arr], fileName, { type: mime })
-}
-
 async function onSubmit(values: Record<string, unknown>) {
   if (values.logo) {
     await uploadImage(parseStringToFile(values.logo as string, 'logo.png'))
@@ -90,6 +57,7 @@ async function onSubmit(values: Record<string, unknown>) {
     description: h('pre', { class: 'mt-2 w-[340px] rounded-md bg-slate-950 p-4' }, h('code', { class: 'text-white' }, JSON.stringify(values, null, 2))),
   })
 }
+
 </script>
 
 <template>
@@ -119,7 +87,7 @@ async function onSubmit(values: Record<string, unknown>) {
         organizationType: {
           label: 'Organization Type',
         },
-        industryTypes: {
+        industryType: {
           label: 'Industry Types',
         },
       }"

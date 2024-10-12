@@ -3,8 +3,22 @@ import { BadgeCheck, Building2, MapPin, BriefcaseBusiness, UsersRoundIcon } from
 import InfoItem from './InfoItem.vue'
 import SocialLinks from './SocialLinks.vue'
 
-const user = useSupabaseUser()
+interface companyInfo {
+  name: string
+  website: string | null
+  organizationType: string | null
+  industryType: string | null
+  aboutUs: string | null
+  id: string
+}
 
+const user = useSupabaseUser()
+const companyInfo = ref<undefined | companyInfo>(undefined)
+
+onMounted(async () => {
+  const response = await $fetch<companyInfo>(`/api/companies/${user.value.id}`)
+  companyInfo.value = response
+})
 </script>
 
 <template>
@@ -13,7 +27,7 @@ const user = useSupabaseUser()
       <section class="hidden md:flex flex-col px-px w-full text-4xl font-bold text-right rounded-lg max-md:max-w-full">
         <div class="flex relative flex-col px-16 py-12 rounded-lg min-h-[191px] max-md:px-5 max-md:max-w-full">
           <img
-            :src="`/images/${user?.id}/banner.png`"
+            src="https://picsum.photos/1800/200"
             alt=""
             class="object-cover absolute inset-0 size-full rounded-t-lg"
           >
@@ -30,20 +44,20 @@ const user = useSupabaseUser()
             <div class="flex flex-col self-start">
               <div class="flex gap-2 items-center self-start text-base font-bold">
                 <h2 class="self-stretch my-auto">
-                  Company Name
+                  {{ companyInfo?.name }}
                 </h2>
                 <BadgeCheck
                   class="object-contain shrink-0 self-stretch my-auto w-5 aspect-square text-blue-600"
                 />
               </div>
               <p class="mt-1 text-xs font-medium leading-none">
-                We connect top talents with top companies
+                {{ companyInfo?.aboutUs }}
               </p>
             </div>
             <div class="flex flex-wrap gap-3 items-start mt-2 text-xs font-medium leading-relaxed text-zinc-500">
               <InfoItem
                 :icon="Building2"
-                text="Tech"
+                :text="companyInfo?.industryType"
               />
               <InfoItem
                 :icon="MapPin"
@@ -68,7 +82,7 @@ const user = useSupabaseUser()
         >
           <img
             loading="lazy"
-            :src="`/images/${user?.id}/logo.png`"
+            src="https://picsum.photos/112"
             alt=""
             class="object-cover max-w-28 max-h-28 absolute inset-0 size-full rounded-lg ring-2 ring-white"
           >

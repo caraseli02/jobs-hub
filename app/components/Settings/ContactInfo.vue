@@ -3,36 +3,11 @@ import { FieldArray, useForm } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/zod'
 import * as z from 'zod'
 import { Cross1Icon } from '@radix-icons/vue'
+import { cantactSchema } from './schemas'
 import { cn } from '@/lib/utils'
 import { toast } from '@/components/ui/toast'
 
-const profileFormSchema = toTypedSchema(z.object({
-  location: z
-    .string()
-    .optional(),
-
-  email: z
-    .string({
-      required_error: 'Email is required',
-    })
-    .min(1)
-    .regex(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, 'Invalid email'),
-
-  mobile: z
-    .string({
-      required_error: 'Mobile is required',
-    })
-    .min(1)
-    .regex(/^\+?\d{1,4}[\s-]?\(?\d{1,3}\)?[\s-]?\d{1,4}[\s-]?\d{1,4}[\s-]?\d{1,9}$/, 'Invalid mobile number'),
-
-  urls: z
-    .array(
-      z.object({
-        value: z.string().url({ message: 'Please enter a valid URL.' }),
-      }),
-    )
-    .optional(),
-}))
+const profileFormSchema = toTypedSchema(z.object(cantactSchema))
 
 const { handleSubmit, resetForm } = useForm({
   validationSchema: profileFormSchema,

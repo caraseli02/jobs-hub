@@ -17,6 +17,13 @@ export default defineNuxtConfig({
     '@nuxtjs/supabase',
     'nuxt-tiptap-editor',
   ],
+  supabase: {
+    redirectOptions: {
+      login: '/login',
+      callback: '/confirm',
+      include: ['/dashboard(/*)?'],
+    },
+  },
   i18n: {
     lazy: true,
     langDir: 'locales',
@@ -51,7 +58,7 @@ export default defineNuxtConfig({
   hub: {
     database: true,
     kv: true,
-    blob: true,
+    blob: false,
     cache: true,
     ai: true,
   },

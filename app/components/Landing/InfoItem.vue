@@ -11,7 +11,7 @@
 <script setup lang="ts">
 interface Props {
   icon: unknown
-  text: string
+  text?: string
 }
 
 defineProps<Props>()
